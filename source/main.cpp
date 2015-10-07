@@ -103,7 +103,7 @@ int main()
   // Initialize services
   srvInit();
   aptInit();
-  hidInit(NULL);
+  hidInit();
   gfxInitDefault();
   fsInit();
   httpcInit();
@@ -114,7 +114,7 @@ int main()
   // throw our title onscreen (todo: make this part of UI maybe? It's
   // totally static for now)
 
-  //*
+  /*
   u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
   hbb::draw_sprite(title_screen_bin, fb, 0, 0);
   gfxFlushBuffers();
@@ -125,7 +125,7 @@ int main()
   consoleInit(GFX_TOP, nullptr);
   //*/
 
-  
+
   hbb::BrowserState state;
   Result error{0};
   hbb::debug_message("Downloading homebrew list...");
@@ -136,7 +136,7 @@ int main()
   while (aptMainLoop())
   {
     gspWaitForVBlank();
-    
+
     u32 const old_selected_index = state.selected_index;
     handle_input(state);
 
@@ -149,15 +149,15 @@ int main()
     }
 
     if (old_selected_index / 3 != state.selected_index / 3) {
-      update_metadata_for_page(hbb::kServer, 
-          get_title_list_cursor(state.filtered_homebrew_list, state.selected_index), 
+      update_metadata_for_page(hbb::kServer,
+          get_title_list_cursor(state.filtered_homebrew_list, state.selected_index),
           state.app_info_for_current_page);
     }
 
     hbb::draw_full_ui_from_state(hbb::ListingDrawState{
       state.selected_category,
       get_title_list_draw_state(
-          get_title_list_cursor(state.filtered_homebrew_list, state.selected_index), 
+          get_title_list_cursor(state.filtered_homebrew_list, state.selected_index),
           state.app_info_for_current_page),
       state.selected_index % 3,
       get_scrollbar_draw_state(
