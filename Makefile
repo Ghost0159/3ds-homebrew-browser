@@ -31,10 +31,11 @@ BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
+ROMFS		:=	romfs
 
-APP_TITLE := Homebrew Browser
-APP_DESCRIPTION := Download homebrew from the internet!
-APP_AUTHOR := cromo - zeta0134
+#APP_TITLE := Homebrew Browser
+#APP_DESCRIPTION := Download homebrew from the internet!
+#APP_AUTHOR := cromo - zeta0134
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -118,6 +119,14 @@ else
 	export APP_ICON := $(TOPDIR)/$(ICON)
 endif
 
+ifeq ($(strip $(NO_SMDH)),)
+	export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
+endif
+
+ifneq ($(ROMFS),)
+	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
+endif
+
 .PHONY: $(BUILD) clean all
 
 #---------------------------------------------------------------------------------
@@ -142,10 +151,11 @@ DEPENDS	:=	$(OFILES:.o=.d)
 # main targets
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(NO_SMDH)),)
-.PHONY: all
-all	:	$(OUTPUT).3dsx $(OUTPUT).smdh
-endif
+$(OUTPUT).3dsx	:	$(OUTPUT).elf $(OUTPUT).smdh
+else
 $(OUTPUT).3dsx	:	$(OUTPUT).elf
+endif
+
 $(OUTPUT).elf	:	$(OFILES)
 
 #---------------------------------------------------------------------------------

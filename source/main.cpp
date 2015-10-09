@@ -1,7 +1,9 @@
 #include <3ds.h>
 
 #include "lua.hpp"
-//#include "luwra.hpp"
+#include "ctrua/ctrua.hpp"
+
+
 
 int main()
 {
@@ -21,8 +23,21 @@ int main()
   lua_State* Lua = luaL_newstate();
   luaL_openlibs(Lua);
 
+  bind_function(Lua, &gfxInitDefault);
+  bind_function(Lua, VOID_WRAP(gspWaitForVBlank));
+
   luaL_dostring(Lua, "print \"Hello World! (Lua)\"");
+
+  Result rc = romfsInit();
+  if (rc) {
+    printf("romfsInit: %08lX\n", rc);
+  } else {
+    luaL_dofile(Lua, "main.lua");
+  }
+
   lua_close(Lua);
+
+  printf("cplusplus: %ld", __cplusplus);
 
   // Main loop
   while (aptMainLoop())
