@@ -2,9 +2,10 @@
 #define CTRUA_HPP
 
 #include <3ds.h>
-#include "lua.hpp"
 #include <functional>
 #include <string>
+
+#include "lua.hpp"
 
 namespace ctrua {
 
