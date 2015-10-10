@@ -16,29 +16,32 @@ int main()
 
   Result rc = romfsInit();
   if (rc) {
+    gfxInitDefault();
+    consoleInit(GFX_TOP, nullptr);
     printf("romfsInit: %08lX\n", rc);
   } else {
-    luaL_dofile(Lua, "main.lua");
+    auto const error = luaL_dofile(Lua, "main.lua");
+    consoleInit(GFX_TOP, nullptr);
+    if (error) {
+      printf("Error in script: %s\n",
+          lua_tostring(Lua, -1));
+    }
   }
 
-  // Main loop
-  // while (aptMainLoop())
-  // {
-  //   gspWaitForVBlank();
+  printf("Lua exited... press Start to exit.\n");
+  while (aptMainLoop())
+  {
+    gspWaitForVBlank();
 
-  //   hidScanInput();
-  //   u32 keys_down = hidKeysDown();
-  //   touchPosition touch_position;
-  //   hidTouchRead(&touch_position);
+    hidScanInput();
+    u32 keys_down = hidKeysDown();
+    if (keys_down & KEY_START) {
+        aptSetStatus(APP_EXITING);
+    }
 
-  //   if (keys_down & KEY_START) {
-  //       aptSetStatus(APP_EXITING);
-  //   }
-
-  //   // Flush and swap framebuffers
-  //   gfxFlushBuffers();
-  //   gfxSwapBuffers();
-  // }
+    gfxFlushBuffers();
+    gfxSwapBuffers();
+  }
 
   // Exit services
   SOC_Shutdown();
