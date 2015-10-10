@@ -1,33 +1,33 @@
 --init = srvInit()
 --aptInit()
-hidInit()
-gfxInitDefault()
+ctru.hidInit()
+ctru.gfxInitDefault()
 --fsInit()
 --httpcInit()
-consoleInit(GFX_BOTTOM)
+ctru.consoleInit(ctru.GFX_BOTTOM)
 
 print "Hello from RomFS!"
 print "Hello again"
 
-print("GFX_TOP " .. GFX_TOP)
-print("GFX_BOTTOM " .. GFX_BOTTOM)
+print("ctru.GFX_TOP " .. ctru.GFX_TOP)
+print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
-running = aptMainLoop()
+running = ctru.aptMainLoop()
 while running do
   --foalskdjf()
   --print "hi"
-  --print(running)
-  gspWaitForVBlank()
+  print(running)
+  ctru.gspWaitForVBlank()
 
-  hidScanInput()
-  keys_down = hidKeysDown()
-  print(keys_down)
-  if keys_down & KEY_START ~= 0 then
+  ctru.hidScanInput()
+  keys_down = ctru.hidKeysDown()
+  --print(keys_down)
+  if keys_down & ctru.KEY_START ~= 0 then
     print "start pressed!"
-    aptSetStatus(APP_EXITING)
+    ctru.aptSetStatus(ctru.APP_EXITING)
   end
 
-  gfxFlushBuffers()
-  gfxSwapBuffers()
-  continue = aptMainLoop()
+  ctru.gfxFlushBuffers()
+  ctru.gfxSwapBuffers()
+  continue = ctru.aptMainLoop()
 end

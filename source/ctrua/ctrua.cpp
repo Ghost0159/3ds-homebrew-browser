@@ -116,45 +116,49 @@ namespace ctrua {
 VOID_WRAP(gspWaitForVBlank);
 
 void bind_ctrua(lua_State* lvm) {
-    lua_pushcfunction(lvm, _lua_srvInit);
-    lua_setglobal(lvm, "srvInit");
-    lua_pushcfunction(lvm, _lua_aptInit);
-    lua_setglobal(lvm, "aptInit");
-    lua_pushcfunction(lvm, _lua_hidInit);
-    lua_setglobal(lvm, "hidInit");
-    lua_pushcfunction(lvm, _lua_gfxInitDefault);
-    lua_setglobal(lvm, "gfxInitDefault");
-    lua_pushcfunction(lvm, _lua_fsInit);
-    lua_setglobal(lvm, "fsInit");
+    lua_newtable(lvm);
 
-    lua_pushinteger(lvm, 0);
-    lua_setglobal(lvm, "GFX_TOP");
-    lua_pushinteger(lvm, 1);
-    lua_setglobal(lvm, "GFX_BOTTOM");
+    lua_pushcfunction(lvm, _lua_srvInit);
+    lua_setfield(lvm, -2, "srvInit");
+    lua_pushcfunction(lvm, _lua_aptInit);
+    lua_setfield(lvm, -2, "aptInit");
+    lua_pushcfunction(lvm, _lua_hidInit);
+    lua_setfield(lvm, -2, "hidInit");
+    lua_pushcfunction(lvm, _lua_gfxInitDefault);
+    lua_setfield(lvm, -2, "gfxInitDefault");
+    lua_pushcfunction(lvm, _lua_fsInit);
+    lua_setfield(lvm, -2, "fsInit");
+
+    lua_pushinteger(lvm, GFX_TOP);
+    lua_setfield(lvm, -2, "GFX_TOP");
+    lua_pushinteger(lvm, GFX_BOTTOM);
+    lua_setfield(lvm, -2, "GFX_BOTTOM");
     lua_pushcfunction(lvm, _lua_consoleInit);
-    lua_setglobal(lvm, "consoleInit");
+    lua_setfield(lvm, -2, "consoleInit");
 
     lua_pushcfunction(lvm, _lua_romfsInit);
-    lua_setglobal(lvm, "romfsInit");
+    lua_setfield(lvm, -2, "romfsInit");
 
     lua_pushcfunction(lvm, _lua_aptMainLoop);
-    lua_setglobal(lvm, "aptMainLoop");
+    lua_setfield(lvm, -2, "aptMainLoop");
     lua_pushcfunction(lvm, _lua_gspWaitForVBlank);
-    lua_setglobal(lvm, "gspWaitForVBlank");
+    lua_setfield(lvm, -2, "gspWaitForVBlank");
     lua_pushcfunction(lvm, _lua_hidScanInput);
-    lua_setglobal(lvm, "hidScanInput");
+    lua_setfield(lvm, -2, "hidScanInput");
     lua_pushcfunction(lvm, _lua_hidKeysDown);
-    lua_setglobal(lvm, "hidKeysDown");
+    lua_setfield(lvm, -2, "hidKeysDown");
     lua_pushcfunction(lvm, _lua_gfxFlushBuffers);
-    lua_setglobal(lvm, "gfxFlushBuffers");
+    lua_setfield(lvm, -2, "gfxFlushBuffers");
     lua_pushcfunction(lvm, _lua_gfxSwapBuffers);
-    lua_setglobal(lvm, "gfxSwapBuffers");
+    lua_setfield(lvm, -2, "gfxSwapBuffers");
     lua_pushcfunction(lvm, _lua_aptSetStatus);
-    lua_setglobal(lvm, "aptSetStatus");
+    lua_setfield(lvm, -2, "aptSetStatus");
     lua_pushinteger(lvm, KEY_START);
-    lua_setglobal(lvm, "KEY_START");
+    lua_setfield(lvm, -2, "KEY_START");
     lua_pushinteger(lvm, APP_EXITING);
-    lua_setglobal(lvm, "APP_EXITING");
+    lua_setfield(lvm, -2, "APP_EXITING");
+
+    lua_setglobal(lvm, "ctru");
 
   // console
   //bind_function<consoleInit>(lvm, "consoleInit");
