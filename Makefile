@@ -28,7 +28,7 @@ include $(DEVKITARM)/3ds_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	homebrew-browser
 BUILD		:=	build
-SOURCES		:=	source
+SOURCES		:=	source source/ctrua
 DATA		:=	data
 INCLUDES	:=	include
 ROMFS		:=	romfs

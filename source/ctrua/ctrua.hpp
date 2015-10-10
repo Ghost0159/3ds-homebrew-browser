@@ -1,13 +1,15 @@
+#ifndef CTRUA_HPP
+#define CTRUA_HPP
+
 #include <3ds.h>
 #include "lua.hpp"
 #include <functional>
+#include <string>
 
-#define VOID_WRAP(function) (void(*)())([](){function();})
+namespace ctrua {
 
-template <typename F>
-void bind_function(lua_State* Lua, F function_pointer);
+void bind_ctrua(lua_State* Lua);
 
-template <>
-void bind_function<void(*)()>(lua_State* Lua, void(*function)()) {
-  
-}
+}  // namespace ctrua
+
+#endif //CTRUA_HPP

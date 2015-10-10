@@ -3,8 +3,6 @@
 #include "lua.hpp"
 #include "ctrua/ctrua.hpp"
 
-
-
 int main()
 {
   // Initialize 3DS Services
@@ -22,9 +20,7 @@ int main()
 
   lua_State* Lua = luaL_newstate();
   luaL_openlibs(Lua);
-
-  bind_function(Lua, &gfxInitDefault);
-  bind_function(Lua, VOID_WRAP(gspWaitForVBlank));
+  ctrua::bind_ctrua(Lua);
 
   luaL_dostring(Lua, "print \"Hello World! (Lua)\"");
 
