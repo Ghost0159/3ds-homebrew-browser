@@ -16,12 +16,14 @@ running = ctru.aptMainLoop()
 while running do
   --foalskdjf()
   --print "hi"
-  print(running)
+  --print(running)
   ctru.gspWaitForVBlank()
 
   ctru.hidScanInput()
-  keys_down = ctru.hidKeysDown()
-  --print(keys_down)
+  keys_down = ctru.hidKeysHeld()
+  touch_position = ctru.hidTouchRead()
+  print(string.format("\x1b[0;20H%08x", keys_down))
+  print(string.format("\x1b[1;20H%04x %04x", touch_position.px, touch_position.py))
   if keys_down & ctru.KEY_START ~= 0 then
     print "start pressed!"
     ctru.aptSetStatus(ctru.APP_EXITING)
