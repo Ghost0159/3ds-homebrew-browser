@@ -9,7 +9,8 @@
 
 namespace ctrua {
 
-void bind_ctrua(lua_State* Lua);
+void bind_ctrua(lua_State* lvm);
+void bind_ptr(lua_State* lvm);
 
 }  // namespace ctrua
 
