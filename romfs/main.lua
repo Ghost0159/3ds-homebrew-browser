@@ -12,6 +12,8 @@ print "Hello again"
 print("ctru.GFX_TOP " .. ctru.GFX_TOP)
 print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
+dofile("ui.lua")
+
 running = ctru.aptMainLoop()
 while running do
   --foalskdjf()

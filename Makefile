@@ -156,7 +156,7 @@ else
 $(OUTPUT).3dsx	:	$(OUTPUT).elf
 endif
 
-$(OUTPUT).elf	:	$(OFILES) $(CURDIR)/../romfs/main.lua
+$(OUTPUT).elf	:	$(OFILES) $(CURDIR)/../romfs/main.lua $(CURDIR)/../romfs/ui.lua
 
 #---------------------------------------------------------------------------------
 # you need a rule like this for each extension you use as binary data
