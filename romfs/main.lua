@@ -4,7 +4,7 @@ ctru.hidInit()
 ctru.gfxInitDefault()
 --fsInit()
 --httpcInit()
-ctru.consoleInit(ctru.GFX_BOTTOM)
+ctru.consoleInit(ctru.GFX_TOP)
 
 print "Hello from RomFS!"
 print "Hello again"
@@ -13,6 +13,13 @@ print("ctru.GFX_TOP " .. ctru.GFX_TOP)
 print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
 dofile("ui.lua")
+
+function put_pixel(x, y)
+  fb, width, height = ctru.gfxGetFramebuffer(ctru.GFX_BOTTOM)
+  ptr.setByte(fb, 3 * (width - y + x * width) + 0, 0xFF)
+  ptr.setByte(fb, 3 * (width - y + x * width) + 1, 0xFF)
+  ptr.setByte(fb, 3 * (width - y + x * width) + 2, 0xFF)
+end
 
 running = ctru.aptMainLoop()
 while running do
@@ -30,6 +37,8 @@ while running do
     print "start pressed!"
     ctru.aptSetStatus(ctru.APP_EXITING)
   end
+
+  put_pixel(touch_position.px, touch_position.py)
 
   ctru.gfxFlushBuffers()
   ctru.gfxSwapBuffers()

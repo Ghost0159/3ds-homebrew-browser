@@ -8,6 +8,7 @@ int main()
   lua_State* Lua = luaL_newstate();
   luaL_openlibs(Lua);
   ctrua::bind_ctrua(Lua);
+  ctrua::bind_ptr(Lua);
 
   luaL_dostring(Lua,
     "srvInit()\n"

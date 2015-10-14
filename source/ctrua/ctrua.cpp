@@ -68,6 +68,18 @@ int _lua_gfxSwapBuffers(lua_State* lvm) {
     return 0;
 }
 
+int _lua_gfxGetFramebuffer(lua_State* lvm) {
+    auto const screen = static_cast<gfxScreen_t>(lua_tointeger(lvm, 1));
+    auto const side = static_cast<gfx3dSide_t>(lua_tointeger(lvm, 2));
+    u16 width{};
+    u16 height{};
+    auto buffer = gfxGetFramebuffer(screen, side, &width, &height);
+    lua_pushlightuserdata(lvm, buffer);
+    lua_pushinteger(lvm, width);
+    lua_pushinteger(lvm, height);
+    return 3;
+}
+
 int _lua_gspWaitForVBlank(lua_State* lvm) {
     gspWaitForVBlank();
     return 0;
@@ -147,6 +159,15 @@ int _lua_srvInit(lua_State* lvm) {
     return 1;
 }
 
+int _lua_setByte(lua_State* lvm) {
+    // TODO: Bounds checking on the arguments
+    u8* const address = static_cast<u8*>(lua_touserdata(lvm, 1));
+    auto const offset = lua_tointeger(lvm, 2);
+    auto const value = lua_tointeger(lvm, 3);
+    address[offset] = value;
+    return 0;
+}
+
 void bind_apt(lua_State* lvm) {
     // enum APP_STATUS
     BIND_CONSTANT(APP_EXITING);
@@ -169,9 +190,14 @@ void bind_gfx(lua_State* lvm) {
     BIND_CONSTANT(GFX_TOP);
     BIND_CONSTANT(GFX_BOTTOM);
 
+    // enum gfx3dSide_t
+    BIND_CONSTANT(GFX_LEFT);
+    BIND_CONSTANT(GFX_RIGHT);
+
     BIND_FUNCTION(gfxInitDefault);
     BIND_FUNCTION(gfxFlushBuffers);
     BIND_FUNCTION(gfxSwapBuffers);
+    BIND_FUNCTION(gfxGetFramebuffer);
 }
 
 void bind_gsp(lua_State* lvm) {
@@ -250,6 +276,14 @@ void bind_ctrua(lua_State* lvm) {
     bind_srv(lvm);
 
     lua_setglobal(lvm, "ctru");
+}
+
+void bind_ptr(lua_State* lvm) {
+    lua_newtable(lvm);
+
+    BIND_FUNCTION(setByte);
+
+    lua_setglobal(lvm, "ptr");
 }
 
 }  // namespace ctrua
