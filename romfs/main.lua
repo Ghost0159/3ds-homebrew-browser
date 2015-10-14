@@ -13,13 +13,7 @@ print("ctru.GFX_TOP " .. ctru.GFX_TOP)
 print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
 ui = require("ui")
-
-function put_pixel(x, y)
-  fb, width, height = ctru.gfxGetFramebuffer(ctru.GFX_BOTTOM)
-  ptr.setByte(fb, 3 * (width - y + x * width) + 0, 0xFF)
-  ptr.setByte(fb, 3 * (width - y + x * width) + 1, 0xFF)
-  ptr.setByte(fb, 3 * (width - y + x * width) + 2, 0xFF)
-end
+graphics = require("graphics")
 
 running = ctru.aptMainLoop()
 while running do
@@ -38,7 +32,7 @@ while running do
     ctru.aptSetStatus(ctru.APP_EXITING)
   end
 
-  put_pixel(touch_position.px, touch_position.py)
+  graphics.put_pixel(touch_position.px, touch_position.py)
 
   ctru.gfxFlushBuffers()
   ctru.gfxSwapBuffers()
