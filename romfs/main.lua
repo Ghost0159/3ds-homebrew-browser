@@ -12,7 +12,7 @@ print "Hello again"
 print("ctru.GFX_TOP " .. ctru.GFX_TOP)
 print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
-dofile("ui.lua")
+ui = require("ui")
 
 function put_pixel(x, y)
   fb, width, height = ctru.gfxGetFramebuffer(ctru.GFX_BOTTOM)

@@ -1,6 +1,8 @@
-defaults = {}
+local ui = {}
 
-function copy_table(input_table)
+ui.defaults = {}
+
+function ui.copy_table(input_table)
   local output_table = {}
   for k,v in pairs(input_table) do
     output_table[k] = v
@@ -8,7 +10,7 @@ function copy_table(input_table)
   return output_table
 end
 
-function merge_tables(...)
+function ui.merge_tables(...)
   local output_table = {}
   for i, input_table in ipairs(...) do
     for k,v in pairs(input_table) do
@@ -18,18 +20,18 @@ function merge_tables(...)
   return output_table
 end
 
-defaults.region = {
+ui.defaults.region = {
   position = {x = 0,y = 0},
   size = {width = 0, height = 0},
   dpad_direction = "horizontal",
   children = {}
 }
 
-defaults.textarea = merge_tables(defaults.region, {
+ui.defaults.textarea = ui.merge_tables(ui.defaults.region, {
   text=""
 })
 
-layout = {
+ui.layout = {
   type = "region",
   size = {width = 320, height = 240},
   children = {
@@ -39,18 +41,20 @@ layout = {
   },
 }
 
-function apply_defaults(element)
+function ui.apply_defaults(element)
   output_element = element
-  if defaults[element.type] ~= nil then
-    output_element = merge_tables(defaults[element.type], element)
+  if ui.defaults[element.type] ~= nil then
+    output_element = ui.merge_tables(ui.defaults[element.type], element)
   end
   --repeat for this element's children
   if output_element.children ~= nil then
     for i,child in ipairs(output_elements.children) do
-      output_elements.children[i] = apply_defaults(output_elements.children[i])
+      output_elements.children[i] = ui.apply_defaults(output_elements.children[i])
     end
   end
   return output_element
 end
 
-layout = apply_defaults(layout)
+ui.layout = ui.apply_defaults(ui.layout)
+
+return ui
