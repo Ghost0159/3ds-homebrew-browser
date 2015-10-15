@@ -14,8 +14,16 @@ print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
 ui = require("ui")
 graphics = require("graphics")
+font = require("font")
 
 local an_better_icon = graphics.load_image("an_better_icon")
+local ubuntu_light_10pt = font.load("ubuntu_light_10pt")
+
+--initialize us to a plain white screen
+graphics.fill_rect(0, 0, 320, 240, 0xFF, 0xFF, 0xFF)
+ctru.gfxFlushBuffers()
+ctru.gfxSwapBuffers()
+graphics.fill_rect(0, 0, 320, 240, 0xFF, 0xFF, 0xFF)
 
 running = ctru.aptMainLoop()
 while running do
@@ -36,6 +44,9 @@ while running do
 
   graphics.put_pixel(touch_position.px, touch_position.py)
   graphics.draw_image(an_better_icon, touch_position.px, touch_position.py)
+
+  font.draw_character("ubuntu_light_10pt", "A", 100, 100)
+  font.draw_string("ubuntu_light_10pt", "Hello World!", 100, 150)
 
   ctru.gfxFlushBuffers()
   ctru.gfxSwapBuffers()

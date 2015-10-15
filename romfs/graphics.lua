@@ -44,4 +44,12 @@ function graphics.put_pixel(x, y, r, g, b)
   ptr.setByte(fb, 3 * (width - y + x * width) + 2, r)
 end
 
+function graphics.fill_rect(x1, y1, x2, y2, r, g, b)
+  for x = x1, x2 do
+    for y = y1, y2 do
+      graphics.put_pixel(x, y, r, g, b)
+    end
+  end
+end
+
 return graphics
