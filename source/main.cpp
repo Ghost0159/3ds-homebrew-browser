@@ -22,7 +22,7 @@ int main()
     printf("romfsInit: %08lX\n", rc);
   } else {
     auto const error = luaL_dofile(Lua, "main.lua");
-    consoleInit(GFX_TOP, nullptr);
+    consoleInit(GFX_BOTTOM, nullptr);
     if (error) {
       printf("Error in script: %s\n", lua_tostring(Lua, -1));
     }

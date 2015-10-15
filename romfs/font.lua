@@ -15,7 +15,6 @@ function font.load(name)
     return nil
   end
 
-  local count = 0
   new_font.characters = {}
   for line in io.lines("/fonts/" .. name .. ".fnt") do
     if line:sub(1, 5) == "char " then
@@ -34,10 +33,8 @@ function font.load(name)
       else
         print("Weird: read in a char without an ID parameter?")
       end
-      count = count + 1
     end
   end
-  print("Loaded " .. name .. " reading in " .. count .. " characters.")
   font.loaded_fonts[name] = new_font
   return new_font
 end
@@ -60,7 +57,6 @@ function font.draw_string(font_name, str, x, y)
       x = x + char_data.xadvance
     end
   end
-  print("Drew " .. str .. " with " .. #str .. "length")
 end
 
 return font
