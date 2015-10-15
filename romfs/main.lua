@@ -17,6 +17,19 @@ print "Hello again"
 print("ctru.GFX_TOP " .. ctru.GFX_TOP)
 print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 
+ui = require("ui")
+graphics = require("graphics")
+font = require("font")
+
+local an_better_icon = graphics.load_image("an_better_icon")
+local ubuntu_light_10pt = font.load("ubuntu_light_10pt")
+
+--initialize us to a plain white screen
+graphics.fill_rect(50, 50, 100, 100, 0x8F, 0x8F, 0xFF)
+ctru.gfxFlushBuffers()
+ctru.gfxSwapBuffers()
+graphics.fill_rect(50, 50, 100, 100, 0x8F, 0x8F, 0xFF)
+
 ctru.errno(0)
 s = ctru.socket(ctru.AF_INET, ctru.SOCK_STREAM, 0)
 errno = ctru.errno()
@@ -49,7 +62,11 @@ while running do
     ctru.aptSetStatus(ctru.APP_EXITING)
   end
 
-  put_pixel(touch_position.px, touch_position.py)
+  graphics.put_pixel(touch_position.px, touch_position.py)
+  graphics.draw_image(an_better_icon, touch_position.px, touch_position.py)
+
+  font.draw_character("ubuntu_light_10pt", "A", 100, 100)
+  font.draw_string("ubuntu_light_10pt", "Hello World!", 100, 150)
 
   ctru.gfxFlushBuffers()
   ctru.gfxSwapBuffers()

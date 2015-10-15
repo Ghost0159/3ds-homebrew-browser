@@ -62,7 +62,6 @@ LIBS	:= -llua -lctru -lm
 #---------------------------------------------------------------------------------
 LIBDIRS	:= $(CTRULIB) $(CURDIR)/vendor
 
-
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
@@ -143,6 +142,9 @@ clean:
 
 
 #---------------------------------------------------------------------------------
+
+print-%  : ; @echo $* = $($*)
+
 else
 
 DEPENDS	:=	$(OFILES:.o=.d)
@@ -156,7 +158,9 @@ else
 $(OUTPUT).3dsx	:	$(OUTPUT).elf
 endif
 
-$(OUTPUT).elf	:	$(OFILES) $(CURDIR)/../romfs/main.lua
+ROMFS_FILES = $(shell find ../$(ROMFS)/ -type f -name '*.*')
+
+$(OUTPUT).elf	:	$(OFILES) $(ROMFS_FILES)
 
 #---------------------------------------------------------------------------------
 # you need a rule like this for each extension you use as binary data
