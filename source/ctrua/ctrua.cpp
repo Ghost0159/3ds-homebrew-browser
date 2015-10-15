@@ -1,5 +1,14 @@
 #include "ctrua.hpp"
 
+#include <errno.h>
+#include <malloc.h>
+
+#include <cstring>
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+
 #define BIND_CONSTANT(name) \
   lua_pushinteger(lvm, name); \
   lua_setfield(lvm, -2, #name)
@@ -147,15 +156,73 @@ int _lua_httpcInit(lua_State* lvm) {
     return 1;
 }
 
+int _lua_errno(lua_State* lvm) {
+    auto const argc = lua_gettop(lvm);
+    if (argc < 0) {
+        errno = lua_tointeger(lvm, 1);
+        return 1;
+    }
+    lua_pushinteger(lvm, errno);
+    return 1;
+}
+
+int _lua_strerror(lua_State* lvm) {
+    auto const error_code = lua_tointeger(lvm, 1);
+    auto const error_string = strerror(error_code);
+    lua_pushstring(lvm, error_string);
+    return 1;
+}
+
 int _lua_romfsInit(lua_State* lvm) {
     auto const result = romfsInit();
     lua_pushinteger(lvm, result);
     return 1;
 }
 
+int _lua_SOC_Initialize(lua_State* lvm) {
+    auto const address = static_cast<u32*>(lua_touserdata(lvm, 1));
+    auto const bytes = lua_tointeger(lvm, 2);
+    auto const error = SOC_Initialize(address, bytes);
+    lua_pushinteger(lvm, error);
+    return 1;
+}
+
+int _lua_inet_addr(lua_State* lvm) {
+    auto const hostname = lua_tostring(lvm, 1);
+    auto const address = inet_addr(hostname);
+    lua_pushinteger(lvm, address);
+    return 1;
+}
+
+int _lua_htons(lua_State* lvm) {
+    auto const host_order = static_cast<u16>(lua_tointeger(lvm, 1));
+    auto const network_order = htons(host_order);
+    lua_pushinteger(lvm, network_order);
+    return 1;
+}
+
+int _lua_socket(lua_State* lvm) {
+    auto const domain = lua_tointeger(lvm, 1);
+    auto const type = lua_tointeger(lvm, 2);
+    auto const protocol = lua_tointeger(lvm, 3);
+    printf("calling socket(%d, %d, %d)\n", domain, type, protocol);
+    auto const socket_descriptor = socket(domain, type, protocol);
+    lua_pushinteger(lvm, socket_descriptor);
+    return 1;
+}
+
 int _lua_srvInit(lua_State* lvm) {
     auto const result = srvInit();
     lua_pushinteger(lvm, result);
+    return 1;
+}
+
+int _lua_memalign(lua_State* lvm) {
+    // TODO: sanity checking on the sizes passed.
+    auto const alignment = lua_tointeger(lvm, 1);
+    auto const bytes = lua_tointeger(lvm, 2);
+    auto const memory = memalign(alignment, bytes);
+    lua_pushlightuserdata(lvm, memory);
     return 1;
 }
 
@@ -166,6 +233,13 @@ int _lua_setByte(lua_State* lvm) {
     auto const value = lua_tointeger(lvm, 3);
     address[offset] = value;
     return 0;
+}
+
+int _lua_isNull(lua_State* lvm) {
+    auto const address = lua_touserdata(lvm, 1);
+    bool const is_null = address == nullptr;
+    lua_pushboolean(lvm, is_null);
+    return 1;
 }
 
 void bind_apt(lua_State* lvm) {
@@ -250,8 +324,26 @@ void bind_httpc(lua_State* lvm) {
     BIND_FUNCTION(httpcInit);
 }
 
+void bind_posix(lua_State* lvm) {
+    BIND_CONSTANT(ENODEV);
+    BIND_CONSTANT(ENOMEM);
+
+    BIND_FUNCTION(errno);
+    BIND_FUNCTION(strerror);
+}
+
 void bind_romfs(lua_State* lvm) {
     BIND_FUNCTION(romfsInit);
+}
+
+void bind_soc(lua_State* lvm) {
+    BIND_CONSTANT(AF_INET);
+
+    BIND_FUNCTION(SOC_Initialize);
+
+    BIND_FUNCTION(inet_addr);
+    BIND_FUNCTION(htons);
+    BIND_FUNCTION(socket);
 }
 
 void bind_srv(lua_State* lvm) {
@@ -272,7 +364,9 @@ void bind_ctrua(lua_State* lvm) {
     bind_gsp(lvm);
     bind_hid(lvm);
     bind_httpc(lvm);
+    bind_posix(lvm);
     bind_romfs(lvm);
+    bind_soc(lvm);
     bind_srv(lvm);
 
     lua_setglobal(lvm, "ctru");
@@ -281,7 +375,10 @@ void bind_ctrua(lua_State* lvm) {
 void bind_ptr(lua_State* lvm) {
     lua_newtable(lvm);
 
+    BIND_FUNCTION(memalign);
+
     BIND_FUNCTION(setByte);
+    BIND_FUNCTION(isNull);
 
     lua_setglobal(lvm, "ptr");
 }
