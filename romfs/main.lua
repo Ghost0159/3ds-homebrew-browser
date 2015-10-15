@@ -15,6 +15,8 @@ print("ctru.GFX_BOTTOM " .. ctru.GFX_BOTTOM)
 ui = require("ui")
 graphics = require("graphics")
 
+local an_better_icon = graphics.load_image("an_better_icon")
+
 running = ctru.aptMainLoop()
 while running do
   --foalskdjf()
@@ -33,6 +35,7 @@ while running do
   end
 
   graphics.put_pixel(touch_position.px, touch_position.py)
+  graphics.draw_image(an_better_icon, touch_position.px, touch_position.py)
 
   ctru.gfxFlushBuffers()
   ctru.gfxSwapBuffers()

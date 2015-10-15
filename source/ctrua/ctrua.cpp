@@ -1,4 +1,5 @@
 #include "ctrua.hpp"
+#include <cstring>
 
 #define BIND_CONSTANT(name) \
   lua_pushinteger(lvm, name); \
@@ -168,6 +169,42 @@ int _lua_setByte(lua_State* lvm) {
     return 0;
 }
 
+int _lua_draw_image_from_atlas(lua_State* lvm) {
+  // Read image data from the provided table
+  lua_getfield(lvm, 1, "width");
+  auto const image_width = lua_tointeger(lvm, -1);
+  lua_pop(lvm, 1);
+
+  lua_getfield(lvm, 1, "height");
+  auto const image_height = lua_tointeger(lvm, -1);
+  lua_pop(lvm, 1);
+
+  lua_getfield(lvm, 1, "pixel_data");
+  auto const pixel_data = lua_tolstring(lvm, -1, nullptr);
+  lua_pop(lvm, 1);
+
+  auto const screen = static_cast<gfxScreen_t>(lua_tointeger(lvm, 2));
+  auto const screen_x = lua_tointeger(lvm, 3);
+  auto const screen_y = lua_tointeger(lvm, 4);
+  auto const sub_x = lua_tointeger(lvm, 5);
+  auto const sub_y = lua_tointeger(lvm, 6);
+  auto const sub_width = lua_tointeger(lvm, 7);
+  auto const sub_height = lua_tointeger(lvm, 8);
+
+  u16 fb_width, fb_height;
+  auto fb = gfxGetFramebuffer(screen, GFX_LEFT, &fb_height, &fb_width);
+
+  int y_offset = fb_height - screen_y - sub_height;
+  for (s32 x = 0; x < sub_width; x++) {
+    int x_offset = screen_x * fb_height + x * fb_height;
+    const int pixel_width = 3;
+    auto destination = fb + (x_offset + y_offset) * pixel_width;
+    auto source = pixel_data + ((sub_x + x) * image_height + (image_height - sub_y - sub_height)) * pixel_width;
+    memcpy(destination, source, sub_height * pixel_width);
+  }
+  return 0;
+}
+
 void bind_apt(lua_State* lvm) {
     // enum APP_STATUS
     BIND_CONSTANT(APP_EXITING);
@@ -198,6 +235,9 @@ void bind_gfx(lua_State* lvm) {
     BIND_FUNCTION(gfxFlushBuffers);
     BIND_FUNCTION(gfxSwapBuffers);
     BIND_FUNCTION(gfxGetFramebuffer);
+
+    // project specific bindings
+    BIND_FUNCTION(draw_image_from_atlas);
 }
 
 void bind_gsp(lua_State* lvm) {
