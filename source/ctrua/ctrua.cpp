@@ -404,6 +404,7 @@ void bind_romfs(lua_State* lvm) {
 
 void bind_soc(lua_State* lvm) {
     BIND_CONSTANT(AF_INET);
+    BIND_CONSTANT(SOCK_STREAM);
 
     BIND_FUNCTION(SOC_Initialize);
 
