@@ -20,10 +20,10 @@ local an_better_icon = graphics.load_image("an_better_icon")
 local ubuntu_light_10pt = font.load("ubuntu_light_10pt")
 
 --initialize us to a plain white screen
-graphics.fill_rect(0, 0, 320, 240, 0xFF, 0xFF, 0xFF)
+graphics.fill_rect(50, 50, 100, 100, 0x8F, 0x8F, 0xFF)
 ctru.gfxFlushBuffers()
 ctru.gfxSwapBuffers()
-graphics.fill_rect(0, 0, 320, 240, 0xFF, 0xFF, 0xFF)
+graphics.fill_rect(50, 50, 100, 100, 0x8F, 0x8F, 0xFF)
 
 running = ctru.aptMainLoop()
 while running do
