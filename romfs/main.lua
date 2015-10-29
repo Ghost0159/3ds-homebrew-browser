@@ -20,12 +20,6 @@ font = require("font")
 local an_better_icon = graphics.load_image("an_better_icon")
 local ubuntu_light_10pt = font.load("ubuntu_light_10pt")
 
---initialize us to a plain white screen
-graphics.fill_rect(0, 0, 320, 240, 0xFF, 0xFF, 0xFF)
-ctru.gfxFlushBuffers()
-ctru.gfxSwapBuffers()
-graphics.fill_rect(0, 0, 320, 240, 0xFF, 0xFF, 0xFF)
-
 ctru.errno(0)
 s = ctru.socket(ctru.AF_INET, ctru.SOCK_STREAM, 0)
 errno = ctru.errno()
@@ -33,6 +27,17 @@ print("socket opening returned", s)
 print("errno is", errno)
 print("strerror is", ctru.strerror(errno));
 print("ENODEV:", ctru.ENODEV, "ENOMEM:", ctru.ENOMEM)
+--error = ctru.connect(s, {})
+--error = ctru.connect(s, {sin_port = ctru.htons(80)})
+-- The connect call is what is hanging citra.
+--[[
+error = ctru.connect(s, {
+    sin_addr = {s_addr = ctru.inet_addr("192.168.1.100")},
+    sin_port = ctru.htons(8000),
+    sin_family = ctru.AF_INET
+})
+print("connecting socket returned", error)
+--]]
 
 function put_pixel(x, y)
   fb, width, height = ctru.gfxGetFramebuffer(ctru.GFX_BOTTOM)
@@ -60,7 +65,7 @@ while running do
 
   --font.draw_character("ubuntu_light_10pt", "A", 100, 100)
   --font.draw_string("ubuntu_light_10pt", "Hello World!", 100, 150)
-  ui.draw()
+  --ui.draw()
 
   ctru.gfxFlushBuffers()
   ctru.gfxSwapBuffers()

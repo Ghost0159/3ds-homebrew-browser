@@ -212,6 +212,33 @@ int _lua_socket(lua_State* lvm) {
     return 1;
 }
 
+int _lua_connect(lua_State* lvm) {
+    fprintf(stderr, "0");
+    auto const socket_descriptor = lua_tointeger(lvm, 1);
+    fprintf(stderr, "1");
+    sockaddr_in server_address{};
+    lua_getfield(lvm, 2, "sin_addr");
+    fprintf(stderr, "2");
+    lua_getfield(lvm, -1, "s_addr");
+    fprintf(stderr, "3");
+    server_address.sin_addr.s_addr = lua_tointeger(lvm, -1);
+    lua_pop(lvm, 2);
+    lua_getfield(lvm, 2, "sin_port");
+    fprintf(stderr, "4");
+    server_address.sin_port = lua_tointeger(lvm, -1);
+    lua_pop(lvm, 1);
+    lua_getfield(lvm, 2, "sin_family");
+    fprintf(stderr, "5");
+    server_address.sin_family = lua_tointeger(lvm, -1);
+
+    fprintf(stderr, "connect(%d, {sin_addr = {s_addr = %X}, sin_port = %04X, sin_family = %d}, %u)\n", socket_descriptor, static_cast<unsigned int>(server_address.sin_addr.s_addr), server_address.sin_port, server_address.sin_family, sizeof(server_address));
+    auto const error = connect(socket_descriptor,
+        reinterpret_cast<sockaddr*>(&server_address), sizeof(server_address));
+    //return 0;
+    lua_pushinteger(lvm, error);
+    return 1;
+}
+
 int _lua_srvInit(lua_State* lvm) {
     auto const result = srvInit();
     lua_pushinteger(lvm, result);
@@ -411,6 +438,7 @@ void bind_soc(lua_State* lvm) {
     BIND_FUNCTION(inet_addr);
     BIND_FUNCTION(htons);
     BIND_FUNCTION(socket);
+    BIND_FUNCTION(connect);
 }
 
 void bind_srv(lua_State* lvm) {
